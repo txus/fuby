@@ -1,0 +1,75 @@
+#!/usr/bin/env rbx
+
+file = __FILE__
+file = File.readlink(file) while File.symlink? file
+$LOAD_PATH.unshift(File.expand_path('../../lib', file))
+
+require 'fuby'
+
+evals    = []
+settings = Hash.new { |h,k| h[k] = false }
+options  = Rubinius::Options.new "Usage: #$0 [options] [script]", 20
+
+options.on( "-A", "Print the AST"          ) { settings[:ast]  = true }
+options.on( "-B", "Print the bytecode"     ) { settings[:bc]   = true }
+
+options.on "-e", "CODE", "Execute CODE" do |e|
+  evals << ['(eval)', e]
+end
+
+options.on "-v", "--version", "Show version" do
+  puts "Fuby #{Fuby::VERSION}"
+  exit 0
+end
+
+options.on "-h", "--help", "Display this help" do
+  puts options
+  exit 0
+end
+
+info = proc do |cond, name, &block|
+  next unless settings[cond]
+  puts '', " #{name} ".center(80, "=")
+  block[]
+  puts "-" * 80, ''
+end
+
+display = proc do |file, code, ev=true|
+  begin
+    if settings[:ast]
+      ast = Fuby::Parser.new.parse_string(code)
+      info.call(:ast, 'AST') { Rubinius::AST::AsciiGrapher.new(ast).print }
+    end
+
+    info.call(:bc, "Bytecode") { puts Fuby::Compiler.compile_string(code, file).decode }
+    if ev
+      puts "=> %p" % Fuby::Compiler.eval(code, file)
+    else
+      Fuby::Compiler.eval(code, file)
+    end
+
+  rescue Exception => e
+    e.render
+  end
+end
+
+options.parse(ARGV).each do |file|
+  evals << [file, File.read(file), false]
+end
+
+if evals.empty?
+  if $stdin.tty?
+    require 'readline'
+    loop do
+      code = Readline.readline "fb> "
+      exit 0 unless code and code != "exit"
+      display['(repl)', code]
+    end
+  else
+    evals << ['(stdin)', STDIN.read]
+  end
+end
+
+evals.each(&display)
+
+

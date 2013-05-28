@@ -1,5 +1,5 @@
 require "fuby/version"
+require "fuby/compiler"
 
 module Fuby
-  # Your code goes here...
 end
