@@ -1,4 +1,5 @@
 # Fuby
+### Functional Ruby
 
 Fuby is a hybrid functional/object-oriented programming language with the same
 syntax as Ruby, although pretty different semantics in many aspects.
