@@ -1,6 +1,6 @@
 class Rubinius::AST::Node
   def new_block_generator(g, arguments)
-    blk = g.class.new(g)
+    blk = g.class.new
 
     blk.in = g.in if g.respond_to?(:in) # patch
 

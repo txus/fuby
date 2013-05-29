@@ -7,6 +7,12 @@ module Fuby
   end
 
   class Compiler < Rubinius::Compiler
+    Stages = Hash.new { |h,k| Rubinius::Compiler::Stages[k] }
+
+    def initialize(from, to)
+      @start = Stages[from].new self, to
+    end
+
     def self.eval(code, *args)
       file, line, binding, instance = '(eval)', 1, Runtime::Lobby.send(:binding), Runtime::Lobby
       args.each do |arg|
@@ -35,7 +41,7 @@ module Fuby
     end
 
     class Generator < Rubinius::Compiler::Generator
-      stage :bytecode
+      Stages[:bytecode] = self
       next_stage Rubinius::Compiler::Encoder
 
       def initialize(*)
@@ -54,7 +60,7 @@ module Fuby
     end
 
     class FileParser < Parser
-      stage :file
+      Stages[:file] = self
       next_stage Generator
 
       def input(file, line=1)
@@ -69,7 +75,7 @@ module Fuby
 
     # source string -> AST
     class StringParser < Parser
-      stage :string
+      Stages[:string] = self
       next_stage Generator
 
       def input(string, name="(eval)", line=1)
@@ -84,7 +90,7 @@ module Fuby
     end
 
     class EvalParser < StringParser
-      stage :eval
+      Stages[:eval] = self
       next_stage Generator
 
       def should_cache?

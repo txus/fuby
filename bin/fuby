@@ -37,7 +37,7 @@ end
 display = proc do |file, code, ev=true|
   begin
     if settings[:ast]
-      ast = Fuby::Parser.new.parse_string(code)
+      ast = Fuby::Parser.parse_string(code, file)
       info.call(:ast, 'AST') { Rubinius::AST::AsciiGrapher.new(ast).print }
     end
 
