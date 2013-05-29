@@ -43,5 +43,9 @@ module Fuby
     def in
       @in ||= {}
     end
+
+    def freeze
+      send :freeze, 0, false
+    end
   end
 end

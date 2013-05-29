@@ -26,5 +26,21 @@ module Fuby
         super
       end
     end
+
+    class StringLiteral < Rubinius::AST::StringLiteral
+      def bytecode(g)
+        super
+      ensure
+        g.freeze
+      end
+    end
+
+    class DynamicString < Rubinius::AST::DynamicString
+      def bytecode(g)
+        super
+      ensure
+        g.freeze
+      end
+    end
   end
 end

@@ -6,6 +6,17 @@ module Fuby
       Compiler.eval(str)
     end
 
+    describe 'a string' do
+      it 'is immutable by default' do
+        compile('"foo"').frozen?.must_equal true
+      end
+      describe 'when dynamic' do
+        it 'is also immutable' do
+          compile('"foo #{3}"').frozen?.must_equal true
+        end
+      end
+    end
+
     describe 'an instance variable assignment' do
       describe 'in the constructor' do
         it 'compiles normally' do
