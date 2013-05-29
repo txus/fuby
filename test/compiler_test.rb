@@ -33,5 +33,39 @@ module Fuby
         end
       end
     end
+
+    describe 'a local variable' do
+      describe 'when assigned the first time' do
+        it 'is okay' do
+          compile """
+          a = 123
+          """
+        end
+      end
+
+      describe 'when assigned a second time' do
+        it 'raises an error' do
+          proc {
+            compile """
+            a = 123
+            a = 234
+            """
+          }.must_raise CompileError
+        end
+      end
+
+      describe 'when assigned a second time in an inner scope' do
+        it 'raises an error' do
+          proc {
+            compile """
+            a = 123
+            lambda {
+              a = 234
+            }
+            """
+          }.must_raise CompileError
+        end
+      end
+    end
   end
 end

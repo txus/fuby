@@ -1,6 +1,5 @@
 require 'fuby/parser'
 require 'fuby/generator'
-require 'fuby/runtime'
 
 module Fuby
   class CompileError < Rubinius::CompileError
@@ -14,19 +13,18 @@ module Fuby
     end
 
     def self.eval(code, *args)
-      file, line, binding, instance = '(eval)', 1, Runtime::Lobby.send(:binding), Runtime::Lobby
+      file, line, binding, instance = '(eval)', 1, Object.send(:binding), Object.new
       args.each do |arg|
         case arg
         when String   then file    = arg
         when Integer  then line    = arg
         when Binding  then binding = arg
-        when Runtime::ObjectType  then instance = arg
         else raise ArgumentError
         end
       end
 
       cm       = compile_eval(code, binding.variables, file, line)
-      cm.scope = Rubinius::ConstantScope.new(Runtime)
+      cm.scope = Rubinius::ConstantScope.new(Object)
       cm.name  = :__fuby__
       script   = Rubinius::CompiledMethod::Script.new(cm, file, true)
       be       = Rubinius::BlockEnvironment.new

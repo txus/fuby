@@ -17,5 +17,14 @@ module Fuby
         g.in[:constructor] = false
       end
     end
+
+    class LocalVariableAssignment < Rubinius::AST::LocalVariableAssignment
+      def bytecode(g)
+        if g.state.scope.search_local(@name)
+          raise Fuby::CompileError, "cannot reassign local variable"
+        end
+        super
+      end
+    end
   end
 end

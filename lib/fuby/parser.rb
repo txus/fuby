@@ -13,5 +13,9 @@ module Fuby
     def process_defn(line, name, body)
       AST::Define.new line, name, body
     end
+
+    def process_lasgn(line, name, body)
+      AST::LocalVariableAssignment.new line, name, body
+    end
   end
 end
