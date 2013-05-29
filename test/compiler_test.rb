@@ -7,12 +7,12 @@ module Fuby
     end
 
     describe 'a string' do
-      it 'is immutable by default' do
-        compile('"foo"').frozen?.must_equal true
+      it 'is a Fuby::String' do
+        compile('"foo"').must_be_kind_of Fuby::String
       end
       describe 'when dynamic' do
-        it 'is also immutable' do
-          compile('"foo #{3}"').frozen?.must_equal true
+        it 'is also a Fuby::String' do
+          compile('"foo #{3}"').must_be_kind_of Fuby::String
         end
       end
     end

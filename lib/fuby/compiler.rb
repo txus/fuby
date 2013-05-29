@@ -19,7 +19,8 @@ module Fuby
         when String   then file    = arg
         when Integer  then line    = arg
         when Binding  then binding = arg
-        else raise ArgumentError
+        else
+          instance = arg
         end
       end
 

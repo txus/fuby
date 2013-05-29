@@ -29,17 +29,17 @@ module Fuby
 
     class StringLiteral < Rubinius::AST::StringLiteral
       def bytecode(g)
+        g.push_fuby(:String)
         super
-      ensure
-        g.freeze
+        g.send :new, 1, false
       end
     end
 
     class DynamicString < Rubinius::AST::DynamicString
       def bytecode(g)
+        g.push_fuby(:String)
         super
-      ensure
-        g.freeze
+        g.send :new, 1, false
       end
     end
   end

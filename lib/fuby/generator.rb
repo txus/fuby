@@ -44,6 +44,12 @@ module Fuby
       @in ||= {}
     end
 
+    def push_fuby(constant=nil)
+      push_cpath_top
+      push_const :Fuby
+      find_const constant if constant
+    end
+
     def freeze
       send :freeze, 0, false
     end
