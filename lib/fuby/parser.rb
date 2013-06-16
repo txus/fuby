@@ -25,5 +25,17 @@ module Fuby
     def process_dstr(line, str, array)
       AST::DynamicString.new line, str, array
     end
+
+    def process_case(line, receiver, whens, else_body)
+      if receiver
+        AST::PatternMatch.new line, receiver, whens, else_body
+      else
+        raise Fuby::CompileError, "cannot pattern match without a receiver"
+      end
+    end
+
+    def process_when(line, conditions, body)
+      AST::Pattern.new line, conditions, body
+    end
   end
 end

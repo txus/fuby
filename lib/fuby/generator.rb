@@ -53,5 +53,22 @@ module Fuby
     def freeze
       send :freeze, 0, false
     end
+
+    # Returns the current size of the stack.
+    #
+    # @return [Fixnum] the current size of the stack.
+    def size
+      @current_block.instance_eval { @stack }
+    end
+
+    def peek(message='TOS:')
+      dup
+      push_self
+      swap_stack
+      push_literal message
+      swap_stack
+      send :p, 2, true
+      pop
+    end
   end
 end

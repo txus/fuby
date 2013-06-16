@@ -78,5 +78,74 @@ module Fuby
         end
       end
     end
+
+    describe 'pattern matching' do
+      it 'needs a receiver' do
+        proc {
+          compile """
+          case
+          when :foo
+            :bar
+          end
+          """
+        }.must_raise CompileError
+      end
+
+      it 'matches a single class' do
+        compile("""
+        case 1
+        when Integer
+          3
+        else
+          10
+        end
+        """).must_equal 3
+      end
+
+      it 'matches a regular expression' do
+        compile("""
+        case 'foo'
+        when /foo/
+          3
+        else
+          10
+        end
+        """).must_equal 3
+      end
+
+      it 'matches a predicate' do
+        compile("""
+        case 1
+        when a.odd?
+          a + 2
+        else
+          99
+        end
+        """).must_equal 3
+      end
+
+      it 'matches a predicate when shadowed by a local var' do
+        compile("""
+        a = 8
+        case 1
+        when a.odd?
+          a + 2
+        else
+          99
+        end
+        """).must_equal 3
+      end
+
+      it 'matches destructuring' do
+        compile("""
+        case [100, 2, 1]
+        when Integer, x.even?, _
+          x + 1
+        else
+          10
+        end
+        """).must_equal 3
+      end
+    end
   end
 end
