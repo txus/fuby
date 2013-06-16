@@ -24,7 +24,7 @@ incompatible ways. Here's what's implemented for now:
 
 ### Immutable strings
 
-All strings are instances of Fuby::String, which an immutable kind of String.
+All strings are instances of Fuby::String, which is an immutable kind of String.
 
 ### Variables are not reassignable
 
@@ -38,7 +38,7 @@ a = 5 # will raise a Fuby::CompileError
 ### Real pattern matching
 
 Pattern matching is implemented in `case` statements. If you want to match in
-the old ruby stile, with procs or regexes or classes, you still can:
+the old ruby style, with procs or regexes or classes, you still can:
 
 ```ruby
 case 1
