@@ -34,7 +34,7 @@ info = proc do |cond, name, &block|
   puts "-" * 80, ''
 end
 
-display = proc do |file, code, ev=true|
+display = proc do |file, code, ev=true, binding=nil|
   begin
     if settings[:ast]
       ast = Fuby::Parser.parse_string(code, file)
@@ -43,9 +43,9 @@ display = proc do |file, code, ev=true|
 
     info.call(:bc, "Bytecode") { puts Fuby::Compiler.compile_string(code, file).decode }
     if ev
-      puts "=> %p" % Fuby::Compiler.eval(code, file)
+      puts "=> %p" % Fuby::Compiler.eval(code, file, binding)
     else
-      Fuby::Compiler.eval(code, file)
+      Fuby::Compiler.eval(code, file, binding)
     end
 
   rescue Exception => e
@@ -60,10 +60,11 @@ end
 if evals.empty?
   if $stdin.tty?
     require 'readline'
+    binding = Object.send(:binding)
     loop do
       code = Readline.readline "fb> "
       exit 0 unless code and code != "exit"
-      display['(repl)', code]
+      display['(repl)', code, true, binding]
     end
   else
     evals << ['(stdin)', STDIN.read]
