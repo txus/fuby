@@ -2,10 +2,10 @@ require 'fuby/parser'
 require 'fuby/generator'
 
 module Fuby
-  class CompileError < Rubinius::CompileError
+  class CompileError < RBX::CompileError
   end
 
-  class Compiler < Rubinius::Compiler
+  class Compiler < RBX::Compiler
     Stages = Hash.new { |h,k| Rubinius::Compiler::Stages[k] }
 
     def initialize(from, to)
@@ -37,9 +37,9 @@ module Fuby
       be.call_on_instance(instance)
     end
 
-    class Generator < Rubinius::Compiler::Generator
+    class Generator < RBX::Compiler::Generator
       Stages[:bytecode] = self
-      next_stage Rubinius::Compiler::Encoder
+      next_stage RBX::Compiler::Encoder
 
       def initialize(*)
         super
@@ -48,7 +48,7 @@ module Fuby
       end
     end
 
-    class Parser < Rubinius::Compiler::Parser
+    class Parser < RBX::Compiler::Parser
       def initialize(*)
         super
       ensure

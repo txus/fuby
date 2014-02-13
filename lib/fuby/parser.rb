@@ -1,7 +1,7 @@
 require 'fuby/ast'
 
 module Fuby
-  class Parser < Rubinius::Melbourne19
+  class Parser < RBX::Melbourne19
     def self.parse_string(string, name="(eval)", line=1)
       new(name, line).parse_string string
     end

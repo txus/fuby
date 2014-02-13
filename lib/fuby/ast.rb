@@ -1,6 +1,6 @@
 module Fuby
   module AST
-    class InstanceVariableAssignment < Rubinius::AST::InstanceVariableAssignment
+    class InstanceVariableAssignment < RBX::AST::InstanceVariableAssignment
       def bytecode(g)
         unless g.in[:constructor]
           raise Fuby::CompileError, "instance variable assignment outside constructor"
@@ -9,7 +9,7 @@ module Fuby
       end
     end
 
-    class Define < Rubinius::AST::Define
+    class Define < RBX::AST::Define
       def bytecode(g)
         g.in[:constructor] = @name == :initialize
         super
@@ -18,7 +18,7 @@ module Fuby
       end
     end
 
-    class LocalVariableAssignment < Rubinius::AST::LocalVariableAssignment
+    class LocalVariableAssignment < RBX::AST::LocalVariableAssignment
       def bytecode(g)
         if g.state.scope.search_local(@name)
           raise Fuby::CompileError, "cannot reassign local variable"
@@ -27,7 +27,7 @@ module Fuby
       end
     end
 
-    class StringLiteral < Rubinius::AST::StringLiteral
+    class StringLiteral < RBX::AST::StringLiteral
       def bytecode(g)
         g.push_fuby(:String)
         super
@@ -35,7 +35,7 @@ module Fuby
       end
     end
 
-    class DynamicString < Rubinius::AST::DynamicString
+    class DynamicString < RBX::AST::DynamicString
       def bytecode(g)
         g.push_fuby(:String)
         super
@@ -43,7 +43,7 @@ module Fuby
       end
     end
 
-    class PatternMatch < Rubinius::AST::ReceiverCase
+    class PatternMatch < RBX::AST::ReceiverCase
       def bytecode(g)
         pos(g)
 
@@ -67,9 +67,9 @@ module Fuby
       end
     end
 
-    class Predicate < Rubinius::AST::Send
+    class Predicate < RBX::AST::Send
       def self.from_send(s)
-        if s.is_a?(Rubinius::AST::Send)
+        if s.is_a?(RBX::AST::Send)
           new(s.line, s.receiver, s.name)
         end
       end
@@ -99,12 +99,12 @@ module Fuby
       end
     end
 
-    class Pattern < Rubinius::AST::Node
+    class Pattern < RBX::AST::Node
       attr_accessor :conditions, :body, :single, :splat
 
       def initialize(line, conditions, body)
         @line = line
-        @body = body || Rubinius::AST::NilLiteral.new(line)
+        @body = body || RBX::AST::NilLiteral.new(line)
         @splat = nil
         @conditions = conditions
       end
@@ -130,7 +130,7 @@ module Fuby
 
       def condition_bytecode(g, condition)
         case condition
-        when Rubinius::AST::Send
+        when RBX::AST::Send
           match_predicate(g, Predicate.from_send(condition))
         else
           match_ruby(g, condition)
@@ -181,7 +181,7 @@ module Fuby
       end
     end
 
-    class SplatWhen < Rubinius::AST::Node
+    class SplatWhen < RBX::AST::Node
       attr_accessor :condition
 
       def initialize(line, condition)

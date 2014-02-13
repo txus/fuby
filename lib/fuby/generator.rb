@@ -1,4 +1,4 @@
-class Rubinius::AST::Node
+class RBX::AST::Node
   def new_block_generator(g, arguments)
     blk = g.class.new
 
@@ -38,7 +38,7 @@ class Rubinius::AST::Node
 end
 
 module Fuby
-  class Generator < Rubinius::Generator
+  class Generator < RBX::Generator
     attr_writer :in
     def in
       @in ||= {}
