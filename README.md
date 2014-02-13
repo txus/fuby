@@ -1,4 +1,5 @@
-# Fuby
+# fuby [![Build Status](https://secure.travis-ci.org/txus/fuby.png)](http://travis-ci.org/txus/fuby)
+
 ### Functional Ruby
 
 Fuby is a hybrid functional/object-oriented programming language with the same
